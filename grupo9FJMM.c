@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define TAM 211 
+
 typedef struct Autor {
     int id;
     char nome[100];
@@ -24,8 +26,23 @@ typedef struct Paper {
 // Vértice do grafo
 typedef struct AutorNode {
     int AutorId;
-    struct AutorNode* prox;  
+    char nome[100];
+    struct AutorNode* prox; 
+    struct Aresta* arestas;
 } AutorNode;
+
+typedef struct AutorRef {
+    AutorNode* autor;           
+    struct AutorRef* prox;
+} AutorRef;
+
+// Dados da Aresta
+typedef struct PaperNode {
+    int PaperId;
+    char titulo[150];
+    struct PaperNode* prox;
+    struct AutorRef;    
+} PaperNode;
 
 typedef struct Aresta {
     struct AutorNode* destino;
@@ -33,11 +50,9 @@ typedef struct Aresta {
     struct Aresta* prox;    
 } Aresta;
 
-// Dados da Aresta
-typedef struct PaperNode {
-    int PaperId;
-    struct PaperNode* prox;
-} PaperNode;
+
+AutorNode* hashAutores[TAM]; 
+PaperNode* hashTitulos[TAM];
 
 int main(){
 
@@ -57,11 +72,23 @@ int main(){
 
     FILE *arquivo_pesq = fopen("dadosPesquisadores.txt", "r");
 
+    char linha[256];
+    char titulo[200];
+    char autor[100];
+
     if(arquivo_pesq == NULL){
-        printf("Erro ao ler arquivo");
+        perror("Erro ao abrir arquivo");
         return 1;
     };
 
+
+   while (fgets(linha, sizeof(linha), arquivo_pesq)) {
+        sscanf(linha, "%99[^\t]\t%199[^\n]", autor, titulo);
+
+        printf("Autor : %s\n", autor);
+        printf("Titulo: %s\n\n", titulo);
+    }
+    
     
 
     return 0;
